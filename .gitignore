@@ -1,0 +1,50 @@
+# .gitignore
+
+# Build results
+[Bb]uild/
+x64/
+x86/
+Debug/
+Release/
+*.obj
+*.exe
+*.dll
+*.lib
+*.pdb
+*.idb
+*.ipch
+*.iobj
+*.ipdb
+*.log
+
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# CMake files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Other
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.VC.opendb
+
+# Ignore generated files
+*.tlog
+*.lastbuildstate
+
+# Ignore backup and temporary files
+*~
+*.swp
+*.tmp
