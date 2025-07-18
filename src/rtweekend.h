@@ -7,6 +7,7 @@
 #include <limits>
 #include <memory>
 #include <random>
+#include <fstream>
 
 // C++ Std Usings
 using std::make_shared;

@@ -72,6 +72,7 @@ int main()
 
 	cam.defocus_angle = 0.6;
 	cam.focus_dist =10.0;
-
-	cam.render(world);
+	std::ofstream out("image.ppm");
+	cam.render(world, out);
+	out.close();
 }
