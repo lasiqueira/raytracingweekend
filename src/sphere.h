@@ -3,20 +3,22 @@
 
 #include "hittable.h"
 
-class sphere : public hittable
+class sphere
 {
 	public:
-		sphere(const point3& center, double radius, shared_ptr<material> mat) 
-			: center(center), radius(std::fmax(0, radius)), mat(mat) {}
+		sphere(const point3& center, double radius, material_type mat_type, int mat_idx) 
+			: center(center), radius(std::fmax(0, radius)), mat_type(mat_type), mat_idx(mat_idx) {}
 
-		bool hit(const ray& r, interval ray_t, hit_record& rec) const override
+		bool hit(const ray& r, interval ray_t, hit_record& rec) const
 		{
+			//TimeFunction;
 			vec3 oc = center - r.origin();
 			auto a = r.direction().length_squared();
 			auto h = dot(r.direction(), oc);
 			auto c = oc.length_squared() - radius * radius;
 
 			auto discriminant = h * h - a * c;
+			
 			if (discriminant < 0)
 			{
 				return false;
@@ -39,14 +41,16 @@ class sphere : public hittable
 			rec.p = r.at(rec.t);
 			vec3 outward_normal = (rec.p - center) / radius;
 			rec.set_face_normal(r, outward_normal);
-			rec.mat = mat;
+			rec.mat_type = mat_type;
+			rec.mat_idx = mat_idx;
 
 			return true;
 		}
 	private:
 		point3 center;
 		double radius;
-		shared_ptr<material> mat;
+		material_type mat_type;
+		int mat_idx;
 };
 
 #endif

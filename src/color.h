@@ -17,6 +17,7 @@ inline double linear_to_gamma(double linear_component)
 
 void write_color(std::ostream& out, const color& pixel_color)
 {
+	// Write the color components to the output stream.
 	auto r = pixel_color.x();
 	auto g = pixel_color.y();
 	auto b = pixel_color.z();

@@ -3,24 +3,21 @@
 
 #include "hittable.h"
 
-class material
+enum class material_type
 {
-	public:
-		virtual ~material() = default;
-
-		virtual bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const
-		{
-			return false;
-		}
+	Lambertian,
+	Metal,
+	Dielectric
 };
 
-class lambertian : public material
+class lambertian
 {
 	public:
 		lambertian(const color& albedo) : albedo(albedo) {}
 
-		bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override
+		bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const
 		{
+
 			auto scatter_direction = rec.normal + random_unit_vector();
 			// Catch degenerate scatter direction
 			if(scatter_direction.near_zero())
@@ -35,13 +32,15 @@ class lambertian : public material
 		color albedo;
 };
 
-class metal : public material
+class metal
 {
 	public:
 		metal(const color& albedo, double fuzz) : albedo(albedo), fuzz(fuzz < 1 ? fuzz : 1) {}
 
-		bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override
+		bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const
 		{
+			//TimeFunction;
+
 			vec3 reflected = reflect(r_in.direction(), rec.normal);
 			reflected = unit_vector(reflected) + (fuzz * random_unit_vector());
 			scattered = ray(rec.p, reflected);
@@ -53,13 +52,14 @@ class metal : public material
 		double fuzz;
 };
 
-class dielectric : public material
+class dielectric
 {
 	public:
 		dielectric(double refraction_index) : refraction_index(refraction_index) {}
 
-		bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override
+		bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const 
 		{
+			//TimeFunction;
 			attenuation = color(1.0, 1.0, 1.0);
 			double ri = rec.front_face ? (1.0 / refraction_index) : refraction_index;
 
@@ -89,6 +89,7 @@ class dielectric : public material
 
 		static double reflectance(double cosine, double refraction_index)
 		{
+			//TimeFunction;
 			// Use Schlick's approximation for reflectance.
 			auto r0 = (1 - refraction_index) / (1 + refraction_index);
 			r0 = r0 * r0;

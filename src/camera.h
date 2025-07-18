@@ -2,7 +2,9 @@
 #define CAMERA_H
 
 #include "hittable.h"
+#include "hittable_list.h"
 #include "material.h"
+#include <vector>
 
 class camera
 {
@@ -20,7 +22,7 @@ class camera
 		double defocus_angle = 0; // Variation angle of rays through each pixel
 		double focus_dist = 10; // Distance from camera lookfrom point to plane of perfect focus
 
-		void render(const hittable& world, std::ostream& out)
+		void render(const hittable_list& world, std::vector<lambertian>& lambertians, std::vector<metal>& metals, std::vector<dielectric>& dielectrics, std::ostream& out)
 		{
 			initialize();
 
@@ -28,14 +30,14 @@ class camera
 
 			for (int j = 0; j < image_height; j++)
 			{
-				std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
+				//std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
 				for (int i = 0; i < image_width; i++)
 				{
 					color pixel_color(0, 0, 0);
 					for (int sample = 0; sample < samples_per_pixel; sample++)
 					{
 						ray r = get_ray(i, j);
-						pixel_color += ray_color(r, max_depth, world);
+						pixel_color += ray_color(r, max_depth, world, lambertians, metals, dielectrics);
 					}
 					write_color(out, pixel_samples_scale * pixel_color);
 				}
@@ -121,7 +123,7 @@ class camera
 			return center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
 		}
 
-		color ray_color(const ray& r, int depth, const hittable& world) const
+		color ray_color(const ray& r, int depth, const hittable_list& world, std::vector<lambertian>& lambertians, std::vector<metal>& metals, std::vector<dielectric>& dielectrics) const
 		{
 			// If we've exceeded the ray bounce limit, no more light is gathered.
 			if (depth <= 0)
@@ -135,9 +137,25 @@ class camera
 			{
 				ray scattered;
 				color attenuation;
-				if (rec.mat->scatter(r, rec, attenuation, scattered))
+				bool scatter;
+				switch (rec.mat_type)
 				{
-					return attenuation * ray_color(scattered, depth - 1, world);
+					case material_type::Dielectric:
+						scatter = dielectrics[rec.mat_idx].scatter(r, rec, attenuation, scattered);
+						break;
+					case material_type::Metal:
+						scatter = metals[rec.mat_idx].scatter(r, rec, attenuation, scattered);
+						break;
+					case material_type::Lambertian:
+						scatter = lambertians[rec.mat_idx].scatter(r, rec, attenuation, scattered);
+						break;
+					default:
+						scatter = false;
+				}
+				
+				if (scatter)
+				{
+					return attenuation * ray_color(scattered, depth - 1, world, lambertians, metals, dielectrics);
 				}
 				return color(0, 0, 0);
 			}

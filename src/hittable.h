@@ -1,14 +1,16 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
-class material;
+
+enum class material_type;
 
 class hit_record 
 {
 	public:
 		point3 p;
 		vec3 normal;
-		shared_ptr<material> mat;
+		material_type mat_type;
+		int mat_idx;
 		double t;
 		bool front_face;
 
@@ -20,13 +22,6 @@ class hit_record
 			front_face = dot(r.direction(), outward_normal) < 0;
 			normal = front_face ? outward_normal : -outward_normal;
 		}
-};
-
-class hittable
-{
-	public:
-		virtual ~hittable() = default;
-		virtual bool hit(const ray& r, interval ray_t, hit_record& rec) const = 0;
 };
 
 #endif
