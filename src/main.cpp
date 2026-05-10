@@ -5,11 +5,11 @@
 #include "hittable_list.h"
 #include "material.h"
 #include "sphere.h"
+#include "scope_timer.h"
 #include <vector>
 
 int main()
 {
-	BeginProfile();
 	hittable_list world;
 
 	std::vector<lambertian> lambertians;
@@ -84,7 +84,7 @@ int main()
 	camera cam;
 
 	cam.aspect_ratio = 16.0 / 9.0;
-	cam.image_width = 600;
+	cam.image_width = 1920;
 	cam.samples_per_pixel = 50;
 	cam.max_depth = 10;
 
@@ -95,8 +95,8 @@ int main()
 
 	cam.defocus_angle = 0.6;
 	cam.focus_dist =10.0;
-	std::ofstream out("image.ppm");
+	std::ofstream out("image_original.ppm");
+	scope_timer t("Original render");
 	cam.render(world,lambertians, metals, dielectrics, out);
 	out.close();
-	EndAndPrintProfile();
 }

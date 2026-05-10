@@ -8,7 +8,6 @@
 #include <memory>
 #include <random>
 #include <fstream>
-#include "../include/perf_profiler/perf_profiler.hpp"
 
 // C++ Std Usings
 using std::make_shared;
