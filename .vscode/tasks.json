@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CMake: build",
+            "type": "cmake",
+            "command": "build",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Render to image.ppm",
+            "type": "shell",
+            "command": "${command:cmake.launchTargetPath} > image.ppm",
+            "dependsOn": "CMake: build",
+            "problemMatcher": []
+        }
+    ]
+}
